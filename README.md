@@ -50,9 +50,9 @@ O `funcoes.py` contém funções essenciais para gerar ondas senoidais, aplicar 
    - As bibliotecas `numpy` e `scipy` são necessárias para rodar o código.
    ```bash
    pip install numpy scipy
-Execute o script:
 
 2. **Rode o arquivo brilha_brilha.py para gerar o arquivo de áudio brilha_brilha.wav.
+    Execute o script:
 
    python brilha_brilha.py
 3. **O arquivo brilha_brilha.wav estará disponível na pasta data.
