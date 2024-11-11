@@ -51,8 +51,8 @@ O `funcoes.py` contém funções essenciais para gerar ondas senoidais, aplicar 
    ```bash
    pip install numpy scipy
 
-2. **Rode o arquivo brilha_brilha.py para gerar o arquivo de áudio brilha_brilha.wav.
+2. **Rode o arquivo brilha_brilha.py para gerar o arquivo de áudio brilha_brilha.wav.**
     Execute o script:
    ```bash
    python brilha_brilha.py
-3. **O arquivo brilha_brilha.wav estará disponível na pasta data.
+3. **O arquivo brilha_brilha.wav estará disponível na pasta data.**
