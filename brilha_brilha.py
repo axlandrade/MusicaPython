@@ -62,4 +62,4 @@ left_hand = utils.get_song_data(left_hand_notes, left_hand_duration, 2,
                                  factor, length, decay, sustain_level)
 data = left_hand+right_hand
 data = data * (4096/np.max(data))
-wavfile.write('data/twinkle_star.wav', 44100, data.astype(np.int16))
+wavfile.write('data/brilha_brilha.wav', 44100, data.astype(np.int16))
