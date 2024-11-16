@@ -33,7 +33,7 @@ def get_piano_notes():
 
 def get_sine_wave(frequency, duration, sample_rate=44100, amplitude=4096):
     '''
-    Obtem a onda senoidal pura.
+    Obtem a onda senoidal.
 
     Parametros
     ----------
