@@ -1,58 +1,98 @@
-# Geração de "Brilha Brilha Estrelinha" com Ondas Senoidais
+# Música com Python: Geração de "Brilha Brilha Estrelinha"
 
-Este projeto sintetiza a música "Brilha Brilha Estrelinha" usando ondas senoidais puras para representar cada nota musical. O código aplica conceitos de síntese de som, incluindo sobretons (harmônicos) e envelopes ADSR (ataque, decaimento, sustentação e liberação) para moldar o timbre e a dinâmica de cada nota, criando uma melodia com acompanhamento que é exportada para um arquivo `.wav`.
+[![Python Version](https://img.shields.io/badge/Python-3.7%2B-blue.svg)](https://www.python.org/)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-## Estrutura do Código
+Este projeto, parte de um Trabalho de Conclusão de Curso, demonstra a síntese de áudio em Python para gerar a melodia e o acompanhamento da canção "Brilha Brilha Estrelinha". O som é construído a partir de ondas senoidais puras, que são enriquecidas com sobretons (harmônicos) e moldadas por um envelope ADSR (Ataque, Decaimento, Sustentação e Liberação) para simular o timbre de um instrumento musical.
 
-### Arquivo `brilha_brilha.py`
+## 🎶 Demonstração de Áudio
 
-O arquivo `brilha_brilha.py` define as notas e durações da melodia e do acompanhamento, configurando os parâmetros de som para cada nota.
+O resultado final é um arquivo `.wav` que pode ser ouvido aqui:
+*(Dica: Após gerar o arquivo `brilha_brilha.wav`, você pode subí-lo para o repositório e colocar um link direto para ele aqui)*
 
-1. **Definição das Notas e Durações**:
-   - `right_hand_notes` e `left_hand_notes` contêm as notas da melodia e do acompanhamento, respectivamente.
-   - `right_hand_duration` e `left_hand_duration` definem a duração de cada nota, garantindo que cada uma seja tocada no tempo correto.
+## 📂 Estrutura do Projeto
 
-2. **Parâmetros de Som e Configuração do ADSR**:
-   - Harmônicos (`factor`), envelope ADSR (`length` e `decay`), e nível de sustentação (`sustain_level`) são ajustados para moldar o som das notas, simulando o comportamento de instrumentos reais.
+O repositório está organizado da seguinte forma:
 
-3. **Geração das Ondas**:
-   - A função `get_song_data` (do módulo `funcoes`) gera ondas senoidais para cada nota, aplicando sobretons e o envelope ADSR. O resultado é uma onda contínua para cada "mão" (direita e esquerda).
-   - As ondas da melodia e do acompanhamento são combinadas para formar a música completa.
+```
+MusicaPython/
+├── .gitignore
+├── LICENSE
+├── README.md
+├── brilha_brilha.py
+├── funcoes.py
+├── requirements.txt
+└── data/
+    └── (esta pasta será criada para o arquivo .wav gerado)
+```
 
-4. **Exportação do Áudio**:
-   - O resultado final é normalizado e salvo em um arquivo `.wav` chamado `brilha_brilha.wav`.
+- **`brilha_brilha.py`**: O script principal que define a melodia, o acompanhamento e os parâmetros sonoros, orquestrando a geração da música.
+- **`funcoes.py`**: Módulo utilitário contendo o "motor" de síntese de som (geração de ondas, ADSR, sobretons, etc.).
+- **`requirements.txt`**: Lista as dependências do projeto.
+- **`LICENSE`**: Contém a licença do projeto (GPLv3).
+- **`data/`**: Diretório onde o arquivo de áudio `brilha_brilha.wav` será salvo.
 
-### Arquivo `funcoes.py`
+## 🚀 Como Executar
 
-O `funcoes.py` contém funções essenciais para gerar ondas senoidais, aplicar sobretons e envelopes ADSR. Estas funções permitem simular a qualidade de som de instrumentos musicais. 
+Para gerar o arquivo de áudio, siga os passos abaixo. Recomenda-se o uso de um ambiente virtual (`venv`).
 
-1. **Função `get_piano_notes`**:
-   - Gera um dicionário com a frequência de cada nota no teclado padrão do piano (88 teclas), permitindo fácil acesso às frequências corretas para as notas nomeadas, como "C4" ou "A4".
+1.  **Clone o repositório:**
+    ```bash
+    git clone [https://github.com/seu-usuario/MusicaPython.git](https://github.com/seu-usuario/MusicaPython.git)
+    cd MusicaPython
+    ```
 
-2. **Função `get_sine_wave`**:
-   - Cria uma onda senoidal simples com uma frequência, duração e amplitude especificadas, gerando o som fundamental de cada nota.
+2.  **Crie e ative um ambiente virtual (opcional, mas recomendado):**
+    ```bash
+    # Para Windows
+    python -m venv venv
+    .\venv\Scripts\activate
 
-3. **Função `apply_overtones`**:
-   - Adiciona sobretons (harmônicos) à nota base usando uma lista de fatores que representam frações da amplitude da fundamental para cada harmônico. Isso enriquece o som e o torna mais realista.
+    # Para macOS/Linux
+    python3 -m venv venv
+    source venv/bin/activate
+    ```
 
-4. **Função `get_adsr_weights`**:
-   - Implementa um envelope ADSR (Ataque, Decaimento, Sustentação, Liberação), que ajusta a amplitude da onda ao longo do tempo, simulando o comportamento dinâmico de instrumentos.
+3.  **Instale as dependências:**
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-5. **Função `apply_pedal`**:
-   - Extende a duração das notas dentro de uma medida, simulando o uso do pedal de sustain de um piano.
+4.  **Execute o script principal:**
+    ```bash
+    python brilha_brilha.py
+    ```
 
-6. **Função `get_song_data`**:
-   - A função central do `funcoes.py`. Ela usa `apply_overtones` e `get_adsr_weights` para criar a sequência de ondas para cada nota e organiza as notas conforme suas durações para formar a música final.
+Após a execução, o arquivo `brilha_brilha.wav` estará disponível no diretório `data/`.
 
-## Como Executar
+## 🛠️ Detalhes Técnicos
 
-1. **Instale as dependências necessárias**:
-   - As bibliotecas `numpy` e `scipy` são necessárias para rodar o código.
-   ```bash
-   pip install numpy scipy
+O processo de síntese de som envolve os seguintes conceitos implementados no módulo `funcoes.py`:
 
-2. **Rode o arquivo brilha_brilha.py para gerar o arquivo de áudio brilha_brilha.wav.**
-    Execute o script:
-   ```bash
-   python brilha_brilha.py
-3. **O arquivo brilha_brilha.wav estará disponível na pasta data.**
+- **Frequências de Notas**: Um dicionário mapeia nomes de notas de piano (ex: "C4") para suas frequências em Hertz.
+- **Geração de Onda Senoidal**: A base de cada nota é uma onda senoidal pura.
+- **Sobretons (Harmônicos)**: Para criar um timbre mais rico e realista, múltiplos senoides (harmônicos) com amplitudes menores são somados à frequência fundamental da nota.
+- **Envelope ADSR**: A amplitude de cada nota é modulada ao longo do tempo para simular a forma como o som de um instrumento evolui:
+  - **Ataque (Attack)**: O tempo que o som leva para atingir a amplitude máxima.
+  - **Decaimento (Decay)**: O tempo para o som diminuir até o nível de sustentação.
+  - **Sustentação (Sustain)**: O nível de amplitude mantido enquanto a nota é segurada.
+  - **Liberação (Release)**: O tempo que o som leva para desaparecer após a nota ser solta.
+
+## 💡 Possíveis Melhorias
+
+Este projeto serve como uma base sólida para explorações futuras em síntese musical. Algumas ideias:
+
+- [ ] Refatorar o código para ler notas e durações de um formato de arquivo padrão (como MIDI ou MusicXML).
+- [ ] Criar uma interface gráfica simples (com `Tkinter` ou `PyQt`) para visualizar a partitura ou alterar parâmetros.
+- [ ] Experimentar com outras formas de onda (quadrada, triangular, dente de serra) para criar timbres diferentes.
+- [ ] Implementar mais efeitos de áudio, como reverb ou vibrato.
+
+##  licença
+
+Este projeto está licenciado sob a Licença Pública Geral GNU v3.0 - veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+## Autor
+
+- **Axl** - *Desenvolvimento do Código*
+
+*(Você pode adicionar aqui links para seu perfil do GitHub, LinkedIn ou e-mail de contato e também uma seção de Agradecimentos ao seu orientador, se desejar.)*
