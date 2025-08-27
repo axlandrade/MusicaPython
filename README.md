@@ -87,12 +87,10 @@ Este projeto serve como uma base sólida para explorações futuras em síntese 
 - [ ] Experimentar com outras formas de onda (quadrada, triangular, dente de serra) para criar timbres diferentes.
 - [ ] Implementar mais efeitos de áudio, como reverb ou vibrato.
 
-##  licença
+## licença
 
 Este projeto está licenciado sob a Licença Pública Geral GNU v3.0 - veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
 ## Autor
 
 - **Axl** - *Desenvolvimento do Código*
-
-*(Você pode adicionar aqui links para seu perfil do GitHub, LinkedIn ou e-mail de contato e também uma seção de Agradecimentos ao seu orientador, se desejar.)*
