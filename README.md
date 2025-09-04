@@ -20,6 +20,16 @@ A aplicação permite que o usuário faça o upload de um arquivo MIDI com múlt
 
 O resultado é um arquivo de áudio mixado e normalizado que pode ser reproduzido diretamente no navegador e baixado pelo usuário. Todo o ambiente de desenvolvimento é containerizado com **Docker** e **VS Code Dev Containers**, garantindo total reprodutibilidade.
 
+## ⚠️ Status Atual do Projeto
+
+Este projeto está em desenvolvimento ativo e ainda não atingiu sua versão final 1.0. Agradeço o interesse e o feedback!
+
+* **Protótipo Funcional:** A aplicação está totalmente funcional para quem seguir os passos de execução no ambiente de desenvolvimento (com Docker e VS Code).
+
+* **Sem Executável ou Link Público:** No momento, **não há um executável de um clique (`.exe`) ou um link público para usar a aplicação diretamente pelo navegador**. O foco até agora foi na construção do motor de síntese, na estrutura do código e na interface local.
+
+* **Próximos Passos:** Estou pesquisando e trabalhando ativamente para fazer o *deploy* da aplicação na nuvem (utilizando o Streamlit Community Cloud ou uma plataforma similar). O objetivo é que, em breve, qualquer pessoa possa acessar e usar o sintetizador através de um simples link, sem precisar de nenhuma instalação.
+
 
 ## 🛠️ Tecnologias Utilizadas
 
