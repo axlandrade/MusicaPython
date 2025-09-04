@@ -1,8 +1,12 @@
 # Use uma imagem oficial do Python como base. A versão 'slim' é mais leve.
-FROM python:3.10-slim-bookworm
+FROM python:3.12-slim
 
 # Define o diretório de trabalho dentro do container
-WORKDIR /app
+WORKDIR /workspace
+
+# Instala o Git e outras dependências do sistema operacional
+# É uma boa prática fazer o update, install e clean na mesma camada RUN
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
 # Copia o arquivo de dependências primeiro para aproveitar o cache do Docker
 COPY requirements.txt .

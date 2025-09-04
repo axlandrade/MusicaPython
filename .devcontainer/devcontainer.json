@@ -18,7 +18,8 @@
             // Lista de extensões do VS Code que serão instaladas automaticamente no container
             "extensions": [
                 "ms-python.python",
-                "ms-python.vscode-pylance"
+                "ms-python.vscode-pylance",
+                "eamodio.gitlens"
             ]
         }
     }
