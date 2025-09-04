@@ -2,3 +2,4 @@ numpy
 scipy
 streamlit
 pretty_midi
+setuptools
