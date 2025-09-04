@@ -219,13 +219,10 @@ def get_song_data(music_notes, note_values, bar_value, factor, length,
         
     return song
 
-<<<<<<< HEAD
-=======
 # funcoes.py
 
 # ... (todas as outras funções continuam aqui) ...
 
->>>>>>> 69f1097 (Adds multi-instrument MIDI synthesis support)
 def generate_note_audio(frequency, duration, timbre, sample_rate=44100, amplitude=4096):
     """
     Gera o áudio para uma única nota com um timbre específico.
@@ -254,8 +251,4 @@ def generate_note_audio(frequency, duration, timbre, sample_rate=44100, amplitud
     # Garante que os tamanhos sejam compatíveis antes de multiplicar
     min_len = min(len(note_wave), len(weights))
     
-<<<<<<< HEAD
     return note_wave[:min_len] * weights[:min_len]
-=======
-    return note_wave[:min_len] * weights[:min_len]
->>>>>>> 69f1097 (Adds multi-instrument MIDI synthesis support)

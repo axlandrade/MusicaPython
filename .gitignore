@@ -218,3 +218,5 @@ __marimo__/
 data/
 __pycache__/
 *.pyc
+
+temp/
