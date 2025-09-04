@@ -7,6 +7,10 @@
         // Define o contexto de build como a pasta raiz do projeto
         "context": ".."
     },
+    // Adicione esta seção para encaminhar a porta do Streamlit
+    "forwardPorts": [
+        8501
+    ],
     // Configurações e extensões específicas do VS Code para este ambiente
     "customizations": {
         "vscode": {
