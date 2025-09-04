@@ -7,28 +7,39 @@ Funcoes Utilitarias pra escrever musica em Python
 """
 import numpy as np
 
+# funcoes.py
+
 def get_piano_notes():
     '''
-    Get the frequency in hertz for all keys on a standard piano.]
+    Gera as frequências em hertz para as teclas de um piano.
+    Versão modificada para incluir todas as notas de 9 oitavas,
+    não apenas as 88 teclas padrão.
 
     Retorna
     -------
     note_freqs : dicionario
         Mapeamento entre o nome da nota e a sua frequencia
-
     '''
     
     # Teclas brancas em maiusculo e teclas pretas em minusculo
     octave = ['C', 'c', 'D', 'd', 'E', 'F', 'f', 'G', 'g', 'A', 'a', 'B'] 
-    base_freq = 440 #Frequency of Note A4
-    keys = np.array([x+str(y) for y in range(0,9) for x in octave])
-        # Corte para 88 teclas padroes
-    start = np.where(keys == 'A0')[0][0]
-    end = np.where(keys == 'C8')[0][0]
-    keys = keys[start:end+1]
+    base_freq = 440 # Frequência da nota A4
     
+    # Gera todas as notas de 9 oitavas (0 a 8)
+    keys = np.array([x+str(y) for y in range(0,9) for x in octave])
+    
+    # --- ALTERAÇÃO PRINCIPAL ---
+    # Removemos o corte para 88 teclas para suportar qualquer nota
+    # que o MIDI possa ter dentro dessas 9 oitavas.
+    # start = np.where(keys == 'A0')[0][0]
+    # end = np.where(keys == 'C8')[0][0]
+    # keys = keys[start:end+1]
+    
+    # Calcula as frequências para todas as chaves geradas
+    # A fórmula continua a mesma, baseada na nota A4 como referência (a 49ª tecla)
     note_freqs = dict(zip(keys, [2**((n+1-49)/12)*base_freq for n in range(len(keys))]))
     note_freqs[''] = 0.0 # stop
+    
     return note_freqs
 
 def get_sine_wave(frequency, duration, sample_rate=44100, amplitude=4096):
@@ -90,65 +101,39 @@ def apply_overtones(frequency, duration, factor, sample_rate=44100, amplitude=40
         fundamental += overtone
     return fundamental
 
-def get_adsr_weights(frequency, duration, length, decay, sustain_level, sample_rate=44100):
-    '''
-    Gerador de envelope ADSR (ataque, decaimento, sustentacao e liberacao) com exponencial
-    pesos aplicados.
+def get_adsr_weights(duration, length, decay, sustain_level, sample_rate=44100):
+    """
+    Gerador de envelope ADSR (ataque, decaimento, sustentação e liberação)
+    com uma lógica matemática mais robusta para evitar erros de arredondamento.
+    """
+    # Calcula o número total de amostras de forma consistente
+    num_samples = int(duration * sample_rate)
+    if num_samples == 0:
+        return np.array([])
 
-    Parametros
-    ----------
-    frequency : float
-        Frequencia em hertz.
-    duration : float
-        Tempo em segundos.
-    length : list
-        Lista de fracoes que indica a duracao de cada etapa do ADSR.
-    decay : list
-        Lista de float para fator de decaimento a ser usado em cada estagio para pesos
-        exponenciais 
-    sustain_level : float
-        Amplitude do estagio `S` como uma fracao da amplitude maxima.
-    sample_rate : int, optional
-        Taxa de amostragem do arquivo Wav. O padrao e 44100.
+    # Calcula o número de amostras para cada estágio do ADSR
+    len_A = int(length[0] * num_samples)
+    len_D = int(length[1] * num_samples)
+    len_S = int(length[2] * num_samples)
+    
+    # O estágio de Release (R) pega todas as amostras restantes para garantir o tamanho exato
+    len_R = num_samples - len_A - len_D - len_S
+    if len_R < 0: len_R = 0 # Garante que não seja negativo
 
-    Retorna
-    -------
-    weights : ndarray
+    # Gera cada estágio (usando interpolação linear, que é mais estável)
+    A = np.linspace(0, 1, len_A, endpoint=False)
+    D = np.linspace(1, sustain_level, len_D, endpoint=False)
+    S = np.full(len_S, sustain_level)
+    R = np.linspace(sustain_level, 0, len_R, endpoint=False) if len_R > 0 else np.array([])
 
-    '''
-    assert abs(sum(length)-1) < 1e-8
-    assert len(length) ==len(decay) == 4
+    # Concatena todos os estágios
+    weights = np.concatenate((A, D, S, R))
     
-    intervals = int(duration*frequency)
-    len_A = np.maximum(int(intervals*length[0]),1)
-    len_D = np.maximum(int(intervals*length[1]),1)
-    len_S = np.maximum(int(intervals*length[2]),1)
-    len_R = np.maximum(int(intervals*length[3]),1)
+    # Garante que o array final tenha o tamanho EXATO, corrigindo qualquer desvio de 1 amostra
+    if len(weights) < num_samples:
+        weights = np.append(weights, np.zeros(num_samples - len(weights)))
     
-    decay_A = decay[0]
-    decay_D = decay[1]
-    decay_S = decay[2]
-    decay_R = decay[3]
-    
-    A = 1/np.array([(1-decay_A)**n for n in range(len_A)])
-    A = A/np.nanmax(A)
-    D = np.array([(1-decay_D)**n for n in range(len_D)])
-    D = D*(1-sustain_level)+sustain_level
-    S = np.array([(1-decay_S)**n for n in range(len_S)])
-    S = S*sustain_level
-    R = np.array([(1-decay_R)**n for n in range(len_R)])
-    R = R*S[-1]
-    
-    weights = np.concatenate((A,D,S,R))
-    smoothing = np.array([0.1*(1-0.1)**n for n in range(5)])
-    smoothing = smoothing/np.nansum(smoothing)
-    weights = np.convolve(weights, smoothing, mode='same')
-    
-    weights = np.repeat(weights, int(sample_rate*duration/intervals))
-    tail = int(sample_rate*duration-weights.shape[0])
-    if tail > 0:
-        weights = np.concatenate((weights, weights[-1]-weights[-1]/tail*np.arange(tail)))
-    return weights
+    return weights[:num_samples]
 
 def apply_pedal(note_values, bar_value):
     '''
@@ -184,52 +169,93 @@ def apply_pedal(note_values, bar_value):
             break
     return new_values
 
+# funcoes.py
+
+# funcoes.py
+
 def get_song_data(music_notes, note_values, bar_value, factor, length,
                   decay, sustain_level, sample_rate=44100, amplitude=4096):
-    '''
-    Gera musicas a partir das notas
-
-    Parametros
-    ----------
-    music_notes : list
-        Lista dos nomes das notas.
-    note_values : list
-        Lista de duracao das notas.
-    bar_value: float
-        Duracao de um compasso.
-    factor : list
-        Fator que sera usado para gerar os sobretons.
-    length : list
-        Comprimento do estagio a ser usado para calcular os pesos ADSR.
-
-    decay : list
-        Decaimento de estagio a ser usado para calcular pesos ADSR.
-    sustain_level : float
-        Amplitude do estagio `S` como uma fracao da amplitude maxima.
-    sample_rate : int, optional
-        Taxa de amostragem do arquivo Wav. O padrao e 44100.
-    amplitude : int, optional
-        Amplitude de pico. O padrao e 4096.
-
-    Retorna
-    -------
-    song : ndarray
-
-    '''
+    """
+    Gera musicas a partir das notas. (Versão final e robusta)
+    """
     note_freqs = get_piano_notes()
-    frequencies = [note_freqs[note] for note in music_notes]
-    new_values = apply_pedal(note_values, bar_value)
-    duration = int(sum(note_values)*sample_rate)
-    end_idx = np.cumsum(np.array(note_values)*sample_rate).astype(int)
-    start_idx = np.concatenate(([0], end_idx[:-1]))
-    end_idx = np.array([start_idx[i]+new_values[i]*sample_rate for i in range(len(new_values))]).astype(int)
-    
-    song = np.zeros((duration,))
-    for i in range(len(music_notes)):
-        this_note = apply_overtones(frequencies[i], new_values[i], factor)
-        weights = get_adsr_weights(frequencies[i], new_values[i], length, 
-                                   decay, sustain_level)
-        song[start_idx[i]:end_idx[i]] += this_note*weights
+    frequencies = [note_freqs.get(note, 0) for note in music_notes]
 
-    song = song*(amplitude/np.max(song))
+    total_duration_sec = sum(note_values)
+    if total_duration_sec == 0:
+        return np.array([])
+        
+    duration_total_samples = int(total_duration_sec * sample_rate)
+    song = np.zeros((duration_total_samples,))
+    
+    # Calcula os pontos de início e fim de cada nota em amostras. Esta é nossa fonte de verdade.
+    cumulative_duration_samples = np.cumsum(np.array([0] + note_values) * sample_rate).astype(int)
+    
+    for i in range(len(music_notes)):
+        if frequencies[i] > 0 and note_values[i] > 0:
+            start_idx = cumulative_duration_samples[i]
+            end_idx = cumulative_duration_samples[i+1]
+
+            # O número de amostras para esta nota é a diferença entre o fim e o início.
+            num_samples_for_note = end_idx - start_idx
+            if num_samples_for_note <= 0:
+                continue
+
+            # A duração em segundos é derivada deste número exato de amostras.
+            duration_sec_for_note = num_samples_for_note / sample_rate
+
+            # Geramos a onda e o envelope usando esta duração precisa.
+            this_note = apply_overtones(frequencies[i], duration_sec_for_note, factor, sample_rate, amplitude)
+            weights = get_adsr_weights(duration_sec_for_note, length, decay, sustain_level, sample_rate)
+
+            # Por segurança, garantimos que os arrays tenham o tamanho exato do nosso espaço.
+            final_len = min(num_samples_for_note, len(this_note), len(weights))
+            
+            # Adiciona a nota gerada no array da música.
+            song[start_idx : start_idx + final_len] += this_note[:final_len] * weights[:final_len]
+
+    if np.max(np.abs(song)) > 0:
+        song = song * (amplitude / np.max(np.abs(song)))
+        
     return song
+
+<<<<<<< HEAD
+=======
+# funcoes.py
+
+# ... (todas as outras funções continuam aqui) ...
+
+>>>>>>> 69f1097 (Adds multi-instrument MIDI synthesis support)
+def generate_note_audio(frequency, duration, timbre, sample_rate=44100, amplitude=4096):
+    """
+    Gera o áudio para uma única nota com um timbre específico.
+    """
+    if frequency <= 0 or duration <= 0:
+        return np.array([])
+
+    # Gera a onda base com sobretons
+    note_wave = apply_overtones(
+        frequency,
+        duration,
+        timbre['factor'],
+        sample_rate,
+        amplitude
+    )
+    
+    # Gera o envelope ADSR para a nota
+    weights = get_adsr_weights(
+        duration,
+        timbre['length'],
+        timbre['decay'],
+        timbre['sustain_level'],
+        sample_rate
+    )
+    
+    # Garante que os tamanhos sejam compatíveis antes de multiplicar
+    min_len = min(len(note_wave), len(weights))
+    
+<<<<<<< HEAD
+    return note_wave[:min_len] * weights[:min_len]
+=======
+    return note_wave[:min_len] * weights[:min_len]
+>>>>>>> 69f1097 (Adds multi-instrument MIDI synthesis support)
