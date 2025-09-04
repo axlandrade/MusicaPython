@@ -1,0 +1,25 @@
+{
+    "name": "MusicaPython Dev Container",
+    // Configuração para construir a imagem a partir do nosso Dockerfile
+    "build": {
+        // Caminho relativo para o Dockerfile
+        "dockerfile": "Dockerfile",
+        // Define o contexto de build como a pasta raiz do projeto
+        "context": ".."
+    },
+    // Configurações e extensões específicas do VS Code para este ambiente
+    "customizations": {
+        "vscode": {
+            // Configurações a serem aplicadas dentro do container
+            "settings": {
+                // Define o interpretador Python padrão para o VS Code
+                "python.defaultInterpreterPath": "/usr/local/bin/python"
+            },
+            // Lista de extensões do VS Code que serão instaladas automaticamente no container
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance"
+            ]
+        }
+    }
+}
