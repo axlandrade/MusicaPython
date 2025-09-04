@@ -10,7 +10,7 @@ Um sintetizador de áudio baseado na web que lê arquivos MIDI multi-instrumenta
 
 ### Demonstração
 
-![Demonstração do App](demo.mp4)
+![Demonstração do App](demo.gif)
 
 ## 🎹 Sobre o Projeto
 
