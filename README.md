@@ -14,9 +14,12 @@ Um sintetizador de áudio baseado na web que lê arquivos MIDI multi-instrumenta
 
 ## 🎹 Sobre o Projeto
 
-Este projeto transforma um simples script de geração de som em uma aplicação web completa e interativa. A aplicação permite que o usuário faça o upload de um arquivo MIDI com múltiplas trilhas (instrumentos) e o sintetizador processa cada trilha individualmente, atribuindo timbres customizáveis e respeitando o tempo absoluto de cada nota.
+Este projeto nasceu como um Trabalho de Conclusão de Curso e evoluiu para uma aplicação web completa e interativa. Para uma análise aprofundada da teoria por trás da implementação, **[consulte a monografia completa aqui](Monografia_Axl.pdf)**.
+
+A aplicação permite que o usuário faça o upload de um arquivo MIDI com múltiplas trilhas (instrumentos) e o sintetizador processa cada trilha individualmente, atribuindo timbres customizáveis e respeitando o tempo absoluto de cada nota. O resultado é um arquivo de áudio mixado e normalizado que pode ser reproduzido diretamente no navegador e baixado pelo usuário.
 
 O resultado é um arquivo de áudio mixado e normalizado que pode ser reproduzido diretamente no navegador e baixado pelo usuário. Todo o ambiente de desenvolvimento é containerizado com **Docker** e **VS Code Dev Containers**, garantindo total reprodutibilidade.
+
 
 ## 🛠️ Tecnologias Utilizadas
 
